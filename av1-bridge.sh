@@ -1,34 +1,57 @@
 #!/bin/bash
 
 # ==============================================================================
-# AV1 Bridge
-# 1. Creates a clean file (Video + Audio only) for Direct Play.
-# 2. Extracts the first subtitle track to an external .srt file.
+# 1. Remuxes video (Copy).
+# 2. Converts audio (AAC).
+# 3. Extracts SRT subtitles to external file (Best for Jellyfin/Chrome).
+# 4. Supports custom output containers.
 # ==============================================================================
 
+# --- Argument Parsing ---
+args=("$@")
+last_arg="${args[${#args[@]}-1]}"
+input_exts=()
+output_ext=".mp4" # Default
+
+# Check if last argument is an output extension (starts with .)
+if [[ "$last_arg" == .* ]]; then
+  output_ext="$last_arg"
+  input_exts=("${args[@]:0:${#args[@]}-1}")
+else
+  input_exts=("${args[@]}")
+fi
+
+# Default inputs if empty
+if [ ${#input_exts[@]} -eq 0 ]; then
+  input_exts=("mkv" "webm")
+fi
+
+echo "Configuration:"
+echo "  > Inputs: ${input_exts[*]}"
+echo "  > Output: $output_ext"
+echo "---------------------------------------------------"
 echo "Scanning directory: $(pwd)"
 count=0
 
-# Loop through files
-for f in *; do
-  [ -f "$f" ] || continue
+# --- Main Loop ---
+for ext in "${input_exts[@]}"; do
+  clean_ext="${ext#.}"
+  shopt -s nocaseglob nullglob
   
-  # Check for MKV/WebM
-  if [[ "${f,,}" == *.mkv || "${f,,}" == *.webm ]]; then
+  for f in *."$clean_ext"; do
     ((count++))
-    
     base_name="${f%.*}"
-    out_video="${base_name}.mp4"
+    out_video="${base_name}${output_ext}"
     out_sub="${base_name}.srt"
     
     echo "---------------------------------------------------"
     echo "File: $f"
-    echo "  > Action: Remuxing to MP4 + Extracting SRT"
+    echo "  > Action: Remuxing to $output_ext + Extracting SRT"
     printf "  > Status: Working"
 
-    # Run FFmpeg in background
-    # -sn : Disable internal subtitles in the MP4
-    # -map 0:s:0 : Select the first subtitle track for the SRT file
+    # FFmpeg Command
+    # -sn: Drop internal subtitles (prevents Transcoding issues)
+    # -map 0:s:0: Extract first subtitle to external file
     ffmpeg -y -nostats -loglevel quiet -i "$f" \
       -map 0:v:0 -c:v copy -tag:v av01 \
       -map 0:a   -c:a aac -b:a 192k \
@@ -44,21 +67,18 @@ for f in *; do
     done
     wait $pid
 
-    # Check for success
     if [ $? -eq 0 ]; then
         echo " [Done]"
-        
-        # Cleanup: Check if the SRT file is valid (not empty)
-        # If the source had no subtitles, ffmpeg creates an empty file.
+        # Cleanup empty SRTs
         if [ ! -s "$out_sub" ]; then
             rm "$out_sub"
             echo "  > Note: No subtitles found (SRT removed)."
         fi
     else
         echo " [Error]"
-        echo "  > Failed to process file."
     fi
-  fi
+  done
+  shopt -u nocaseglob nullglob
 done
 
 if [ "$count" -eq 0 ]; then
