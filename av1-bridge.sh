@@ -10,7 +10,7 @@ for f in *; do
     
     ((count++))
     out="${f%.*}.mp4"
-    echo "---------------------------------------------------"
+    echo "------"
     echo "File: $f"
     echo "  > Action: REMUXING (Direct Copy)"
     
