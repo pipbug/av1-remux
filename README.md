@@ -1,5 +1,5 @@
 # av1-bridge
-A simple bash script to remux AV1 video files (`.mkv`, `.webm`) into more widely compatible `.mp4` containers. Watch your AV1 library on web browsers and Apple devices without transcoding! It should get most devices playing AV1 natively by applying the correct metadata tags.
+A simple bash script to remux AV1 video files for wider browser/device compatibility. It should get most devices playing AV1 natively by applying the correct metadata tags.
 
 ## What it does
 
@@ -15,12 +15,9 @@ A simple bash script to remux AV1 video files (`.mkv`, `.webm`) into more widely
 Grab the script, make it executable, and run it in a folder with your video files.
 
 ```bash
-chmod +x av1-bridge.sh
-./av1-bridge.sh
-```
-You can also pass specific extensions if you want:
-```bash
-./av1-bridge.sh mkv webm
+# Usage: ./script.sh [input_ext1] ... [.output_ext]
+# Example: ./script.sh mkv .mov   (Converts MKVs to MOV)
+# Example: ./script.sh            (Defaults to MKV/WebM -> MP4)
 ```
 ## Requirements
 - ffmpeg (Must be installed and in your PATH)
