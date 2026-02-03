@@ -77,7 +77,7 @@ for ext in "${input_exts[@]}"; do
     else
         echo ""
         echo "  > [!] Subtitle Error. Retrying (Dropping subtitles)..."
-        printf "  > Status: Retrying"
+        printf "  > Status: Working (no subtitles)..."
         
         # ATTEMPT 2: Fallback (Drop Subtitles)
         ffmpeg -y -nostats -loglevel quiet -i "$f" \
