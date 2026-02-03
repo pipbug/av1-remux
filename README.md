@@ -31,7 +31,11 @@ chmod +x av1-bridge.sh
 Navigate to your movie folder and run the script:
 
 ```bash
-./av1-bridge.sh
+# Convert to .mov (QuickTime friendly)
+./av1-bridge.sh .mov
+
+# Convert specific inputs/outputs
+./av1-bridge.sh webm .mkv
 ```
 It will scan for any .mkv or .webm files and process them automatically.
 
