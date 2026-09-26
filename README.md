@@ -1,8 +1,11 @@
+> [!CAUTION]
+> This utility has not been tested extensively and thus may not work correctly. Use at your own risk.
+
 # av1-bridge
 
 **Universal AV1 Compatibility for Jellyfin, Chrome, and Apple.**
 
-A bash utility that makes AV1 files play natively (**Direct Play**) on almost any client by separating the subtitles and standardizing the container.
+A bash utility that makes AV1 files play natively (Direct Play) on almost any client by separating the subtitles and standardizing the container.
 
 ## The Problem
 * **Chrome/Jellyfin:** Cannot play MP4s with embedded subtitles (they force a server-side transcode just to render text).
