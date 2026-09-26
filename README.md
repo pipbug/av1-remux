@@ -1,7 +1,7 @@
 > [!CAUTION]
 > This utility has not been tested extensively and thus may not work correctly. Use at your own risk.
 
-# av1-bridge
+# av1-remux
 
 **Universal AV1 Compatibility for Jellyfin, Chrome, and Apple.**
 
